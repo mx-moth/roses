@@ -1,0 +1,52 @@
+version: '2.3'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+
+    volumes:
+      - './roses/frontend:/app/frontend'
+      - './roses/static:/app/static'
+
+  backend: &backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+
+    command: ./manage.py runserver 0.0.0.0:8000
+
+    ports:
+      - '80:8000'
+
+    volumes:
+      - './roses:/app/roses'
+      - './tests:/app/tests'
+      - './data/:/app/data/'
+      - './deploy:/app/deploy/'
+      - './dev/settings.py:/app/devsettings.py'
+      - './manage.py:/app/manage.py'
+
+    environment:
+      - 'DJANGO_SETTINGS_MODULE=devsettings'
+
+    depends_on:
+      - database
+
+    links:
+      - mail
+      - frontend
+
+  database:
+    image: postgres
+    ports:
+      - '5432:5432'
+
+
+  mail:
+    image: djfarrelly/maildev
+    ports:
+      - "9000:80"
