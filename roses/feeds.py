@@ -3,11 +3,12 @@ import logging
 import time
 
 import feedparser
+import lxml.etree
 from django.db import transaction
 from django.utils import timezone
 from django.utils.text import Truncator
 
-from .models import Article
+from .models import Article, Feed, Folder
 
 logger = logging.getLogger(__name__)
 
@@ -56,3 +57,39 @@ def remove_stale_articles(articles, when=None):
     """
 
     articles.stale(when).delete()
+
+
+@transaction.atomic
+def import_opml(opml_string, target_folder):
+    xml = lxml.etree.fromstring(opml_string)
+    body = xml.find('./body')
+    for outline in body.getchildren():
+        import_opml_outline(outline, target_folder)
+
+
+def import_opml_outline(outline, target_folder):
+    if outline.get('xmlUrl', None):
+        import_opml_feed(outline, target_folder)
+    else:
+        import_opml_folder(outline, target_folder)
+
+
+def import_opml_feed(outline, target_folder):
+    Feed.objects.create(
+        folder=target_folder,
+        name=outline.get('title', 'Untitled'),
+        feed_url=outline.get('xmlUrl'),
+        homepage=outline.get('htmlUrl', ''),
+        fetch_interval=datetime.timedelta(hours=1),
+    )
+
+
+def import_opml_folder(outline, target_folder):
+    folder = Folder.objects.create(
+        user=target_folder.user,
+        name=outline.get('text', 'Untitled folder'),
+        parent=target_folder,
+    )
+
+    for child in outline:
+        import_opml_outline(child, folder)

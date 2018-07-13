@@ -34,6 +34,7 @@ RUN apk add --no-cache \
 		python3 python3-dev \
 		postgresql-dev gcc musl-dev \
 		uwsgi uwsgi-python3 \
+		g++ gcc libxslt-dev \
 	&& true
 
 RUN pip3 install --no-cache-dir --upgrade \
