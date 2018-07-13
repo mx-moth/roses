@@ -5,10 +5,15 @@ import time
 import feedparser
 from django.db import transaction
 from django.utils import timezone
+from django.utils.text import Truncator
 
 from .models import Article
 
 logger = logging.getLogger(__name__)
+
+
+def truncate(text, length):
+    return Truncator(text).chars(length)
 
 
 def to_datetime(timetuple):
@@ -30,7 +35,7 @@ def fetch_feed(feed):
             feed=feed,
             guid=entry.id,
             defaults=dict(
-                title=getattr(entry, 'title', 'Untitled'),
+                title=truncate(getattr(entry, 'title', 'Untitled'), 255),
                 description=getattr(entry, 'description', ''),
                 url=getattr(entry, 'link', feed.homepage),
                 published_date=to_datetime(entry.published_parsed) or now,
