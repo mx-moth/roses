@@ -103,14 +103,17 @@ class ArticleQuerySet(models.QuerySet):
             .filter(feed__folder__user=user)
 
     def stale(self, when=None):
+        """
+        Find all stale articles. An article is stale if it has been read, and
+        it was published over 30 days ago. The cutoff point is configurable by
+        passing a :class:`datetime.datetime` instance. Articles older than this
+        will be considered stale.
+        """
         # TODO Make expiry time configurable. Per feed? Per user?
         if when is None:
             when = timezone.now() - datetime.timezone(days=30)
 
-        return self\
-            .filter(read=True)\
-            .filter(published_date__lte=when)\
-
+        return self.filter(read=True, published_date__lte=when)
 
 
 class Article(UUIDModelMixin, models.Model):

@@ -55,4 +55,4 @@ def remove_stale_articles(articles, when=None):
     a threshold.
     """
 
-    articles.stale().delete()
+    articles.stale(when).delete()
