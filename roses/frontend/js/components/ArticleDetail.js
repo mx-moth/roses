@@ -34,9 +34,9 @@ class ArticleDetail extends React.Component {
 	makeViewer() {
 		return (<React.Fragment>
 			<h2 className="viewer--title">{this.props.article.title}</h2>
-			<p>
+			<div className="viewer--meta">
 				<a href={this.props.article.url} target="_blank">Open article in a new tab</a>
-			</p>
+			</div>
 			<div className="viewer--content" ref={this.viewerRef}>
 				{this.makeViewerContent()}
 			</div>

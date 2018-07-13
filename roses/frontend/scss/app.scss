@@ -60,11 +60,11 @@ body {
 }
 
 .feeds {
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 	background-color: #cccccc;
 	white-space: nowrap;
-	overflow-x: hidden;
-	overflow-y: auto;
 	text-overflow: ellipsis;
 }
 .feeds--title {
@@ -72,7 +72,14 @@ body {
 	margin: 0;
 	@include nice-padding();
 }
-.feeds--list,
+.feeds--list {
+	margin: 0;
+	padding: 0;
+	flex: 1 1 auto;
+	background-color: white;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
 .feeds--item {
 	margin: 0;
 	padding: 0;
@@ -90,11 +97,11 @@ body {
 }
 
 .articles {
+	display: flex;
+	flex-direction: column;
 	height: 100%;
 	background-color: #dddddd;
 	white-space: nowrap;
-	overflow-x: hidden;
-	overflow-y: auto;
 	text-overflow: ellipsis;
 }
 .articles--title {
@@ -102,24 +109,39 @@ body {
 	margin: 0;
 	@include nice-padding();
 }
-.articles--list,
+.articles--meta {
+	@include nice-padding();
+}
+.articles--list {
+	margin: 0;
+	padding: 0;
+	flex: 1 1 auto;
+	background-color: white;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
 .articles--item {
 	margin: 0;
 	padding: 0;
 	list-style-type: none;
 }
+
 .article {
 	background-color: white;
 	border-bottom: 1px solid #ccc;
 	@include nice-padding();
 	cursor: pointer;
 }
-.article--unread {
+.article__unread {
 	border-right: 3px solid #3333ff;
+	.article--title {
+		font-weight: bold;
+	}
 }
-.article--selected {
+.article__selected {
 	background-color: #eeeeff;
 }
+
 .viewer {
 	background-color: #eeeeee;
 	position: relative;
@@ -131,12 +153,15 @@ body {
 	margin: 0;
 	@include nice-padding();
 }
-
+.viewer--meta {
+	@include nice-padding();
+}
 .viewer--content {
 	position: relative;
 	flex: 1 0 auto;
-}
 
+	background-color: white;
+}
 .viewer--iframe {
 	position: absolute;
 	top: 0;

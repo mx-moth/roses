@@ -7,12 +7,12 @@ import { selectArticle } from '../actions';
 
 const ArticleItem = ({ article, isSelected, onClick }) => {
 	const className = classnames('articles--item', 'article', {
-		'article--unread': !article.read,
-		'article--selected': isSelected,
+		'article__unread': !article.read,
+		'article__selected': isSelected,
 	});
 	return (
 		<li className={className} onClick={onClick}>
-			<strong>{article.title}</strong>
+			<span class='article--title'>{article.title}</span>
 			<br />
 			{article.published_date.calendar()}
 		</li>
@@ -39,6 +39,9 @@ const ArticleList = ({
 	return (
 		<div className="articles">
 			<h2 className="articles--title">{feed.name}</h2>
+			<div className="articles--meta">
+				<a href={feed.homepage} target="_blank">Open homepage</a>
+			</div>
 			<ul className="articles--list">
 				{articles.map((article) => {
 					return <ArticleItem
