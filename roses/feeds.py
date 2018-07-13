@@ -32,16 +32,35 @@ def fetch_feed(feed):
     now = timezone.now()
 
     for entry in response.entries:
+
+        # Everything must have a title
+        title = entry.title
+        # Everything should have a URL, but sometimes it does not
+        url = getattr(entry, 'link', None)
+        # Everything should have an ID, but sometimes it does not. Make up
+        # a decent replacement in this case.
+        id = getattr(entry, 'id', url or title)
+
+        # Everything should have a date, but no one can agree on published vs.
+        # updated. Also some things do not have dates.
+        if hasattr(entry, 'published_parsed'):
+            published = to_datetime(entry.published_parsed)
+        elif hasattr(entry, 'updated_parsed'):
+            published = to_datetime(entry.updated_parsed)
+        else:
+            published = now
+
         article, created = Article.objects.update_or_create(
             feed=feed,
-            guid=entry.id,
+            guid=id,
             defaults=dict(
                 title=truncate(getattr(entry, 'title', 'Untitled'), 255),
                 description=getattr(entry, 'description', ''),
-                url=getattr(entry, 'link', feed.homepage),
-                published_date=to_datetime(entry.published_parsed) or now,
+                url=url or feed.homepage,
+                published_date=published,
             ),
         )
+
         logger.info("%s article '%s' (GUID '%s')",
                     "Created" if created else "Updated",
                     article, article.guid)
