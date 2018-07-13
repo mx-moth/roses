@@ -82,7 +82,8 @@ class Feed(UUIDModelMixin, models.Model):
     last_fetched = models.DateTimeField(null=True, blank=True)
     fetch_interval = models.DurationField()
     show_as = EnumChoiceField(
-        FeedDisplayStyle, verbose_name="Display article as")
+        FeedDisplayStyle, verbose_name="Display article as",
+        default=FeedDisplayStyle.description)
 
     objects = FeedQuerySet.as_manager()
 
@@ -119,9 +120,9 @@ class ArticleQuerySet(models.QuerySet):
 class Article(UUIDModelMixin, models.Model):
     feed = models.ForeignKey(Feed, on_delete=models.CASCADE)
 
-    title = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=500, blank=True)
     description = models.TextField(blank=True)
-    url = models.URLField(blank=True)
+    url = models.URLField(blank=True, max_length=500)
     guid = models.CharField(max_length=255, blank=True, db_index=True)
     published_date = models.DateTimeField()
 

@@ -54,7 +54,7 @@ def fetch_feed(feed):
             feed=feed,
             guid=id,
             defaults=dict(
-                title=truncate(getattr(entry, 'title', 'Untitled'), 255),
+                title=truncate(getattr(entry, 'title', 'Untitled'), 500),
                 description=getattr(entry, 'description', ''),
                 url=url or feed.homepage,
                 published_date=published,
