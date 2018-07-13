@@ -111,7 +111,7 @@ class ArticleQuerySet(models.QuerySet):
         """
         # TODO Make expiry time configurable. Per feed? Per user?
         if when is None:
-            when = timezone.now() - datetime.timezone(days=30)
+            when = timezone.now() - datetime.timedelta(days=30)
 
         return self.filter(read=True, published_date__lte=when)
 
