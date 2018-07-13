@@ -9,14 +9,7 @@ const Description = ({ article }) => {
 	const html = {__html: article.description};
 	return (
 		<IFrame className='viewer--iframe'>
-			<div>
-				<h1>{article.title}</h1>
-				<p>
-					<a href={article.url} target="_blank">Open article URL in a new tab</a>
-				</p>
-				<hr/>
-				<div dangerouslySetInnerHTML={html} />
-			</div>
+			<div dangerouslySetInnerHTML={html} />
 		</IFrame>
 	);
 };
@@ -25,7 +18,12 @@ Description.propTypes = {
 	article: PropTypes.object.isRequired,
 };
 
+
 class ArticleDetail extends React.Component {
+	constructor(props) {
+		super(props);
+		this.viewerRef = React.createRef();
+	}
 	wrap(els) {
 		return <div className="viewer">
 			{els}
@@ -33,6 +31,18 @@ class ArticleDetail extends React.Component {
 	}
 
 	makeViewer() {
+		return (<React.Fragment>
+			<h2 className="viewer--title">{this.props.article.title}</h2>
+			<p>
+				<a href={this.props.article.url} target="_blank">Open article in a new tab</a>
+			</p>
+			<div className="viewer--content" ref={this.viewerRef}>
+				{this.makeViewerContent()}
+			</div>
+		</React.Fragment>);
+	}
+
+	makeViewerContent() {
 		const showAs = this.props.feed.show_as;
 		let viewer;
 
