@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import IFrame from './IFrame';
+import Popup from './Popup';
 import { markRead } from '../actions';
 
 const Description = ({ article }) => {
@@ -47,7 +48,15 @@ class ArticleDetail extends React.Component {
 		let viewer;
 
 		if (showAs == 'url') {
-			return <iframe className="viewer--iframe" src={this.props.article.url} />;
+			const pretendSecure = true;
+			const isRosesSecure = pretendSecure || window.location.protocol == 'https:';
+			const isArticleSecure = this.props.article.url.startsWith('https:');
+
+			if (isRosesSecure && !isArticleSecure) {
+				return <Popup url={this.props.article.url} containerRef={this.viewerRef} />;
+			} else {
+				return <iframe className="viewer--iframe" src={this.props.article.url} />;
+			}
 		} else {
 			return <Description article={this.props.article} feed={this.props.feed} />;
 		}
